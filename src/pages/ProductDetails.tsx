@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Minus, Plus, Share2 } from 'lucide-react';
 import MainContainer from '../components/layout/MainContainer';
 import Navbar from '../components/nav/Navbar';
 import Footer from '../components/layout/Footer';
+import ImageZoom from '../components/product/ImageZoom';
 
 import { useCart } from '../context/CartContext';
 import { useProducts } from '../context/ProductsContext';
@@ -127,11 +128,11 @@ const ProductDetails: React.FC = () => {
                 {/* ═══ IMAGE SECTION ═══ */}
                 <div className="w-full lg:w-[55%] xl:w-[58%] relative">
                     <div className="lg:sticky lg:top-0">
-                        <div className="relative bg-[#e8e8e4] aspect-[3/4] sm:aspect-[4/5] lg:aspect-auto lg:h-screen flex items-center justify-center overflow-hidden">
-                            <img
+                        <div className="relative aspect-[3/4] sm:aspect-[4/5] lg:aspect-auto lg:h-screen flex items-center justify-center overflow-hidden">
+                            <ImageZoom
                                 src={variantImages[currentImage]}
                                 alt={`${product.name} — ${variant.name}`}
-                                className="max-h-full max-w-full object-contain p-6 sm:p-10 lg:p-16 mix-blend-multiply filter contrast-110 grayscale-[10%] transition-opacity duration-500"
+                                className="max-h-full max-w-full p-6 sm:p-10 lg:p-16"
                             />
 
                             {/* Share */}

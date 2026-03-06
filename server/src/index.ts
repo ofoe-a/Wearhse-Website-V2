@@ -80,6 +80,16 @@ app.use('/api', generalLimiter);
 app.use('/api/orders/checkout', checkoutLimiter);
 app.use('/api/auth', authLimiter);
 
+// Security headers
+app.use((_req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    next();
+});
+
 // Health check
 app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok', service: 'wearhse-api', timestamp: new Date().toISOString() });
