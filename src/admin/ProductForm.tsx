@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, Plus, Trash2, Save, Image, Upload, X, GripVertical } from 'lucide-react';
-import { fetchAdminProduct, createProduct, updateProduct, updateVariant, addVariants, addImages, toggleHeroImage, uploadImages, reorderColors } from './services/adminApi';
+import { fetchAdminProduct, createProduct, updateProduct, updateVariant, addVariants, addImages, deleteImage, toggleHeroImage, uploadImages, reorderColors } from './services/adminApi';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -290,7 +290,17 @@ const ProductForm: React.FC = () => {
         setImages(updated);
     };
 
-    const removeImage = (idx: number) => {
+    const removeImage = async (idx: number) => {
+        const img = images[idx];
+        // If image exists in DB, delete it from backend
+        if (img.id) {
+            try {
+                await deleteImage(img.id);
+            } catch (err) {
+                console.error('Failed to delete image:', err);
+                return; // Don't remove from UI if backend delete failed
+            }
+        }
         setImages(images.filter((_, i) => i !== idx));
     };
 

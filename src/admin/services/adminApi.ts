@@ -125,6 +125,10 @@ export const addImages = (productId: string, images: any[]) =>
         body: JSON.stringify({ images }),
     });
 
+// Delete image
+export const deleteImage = (imageId: string) =>
+    adminFetch(`/admin/images/${imageId}`, { method: 'DELETE' });
+
 // Hero images
 export const toggleHeroImage = (imageId: string, hero: boolean) =>
     adminFetch(`/admin/images/${imageId}/hero`, { method: 'PATCH', body: JSON.stringify({ hero }) });

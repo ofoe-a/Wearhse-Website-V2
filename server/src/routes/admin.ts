@@ -507,6 +507,21 @@ router.patch('/images/:id/hero', async (req: AuthRequest, res: Response) => {
     }
 });
 
+// DELETE /api/admin/images/:id — Delete a product image
+router.delete('/images/:id', async (req: AuthRequest, res: Response) => {
+    try {
+        const result = await query('DELETE FROM product_images WHERE id = $1 RETURNING url', [req.params.id]);
+        if (result.rows.length === 0) {
+            res.status(404).json({ error: 'Image not found' });
+            return;
+        }
+        res.json({ message: 'Image deleted', url: result.rows[0].url });
+    } catch (err) {
+        console.error('Delete image error:', err);
+        res.status(500).json({ error: 'Failed to delete image' });
+    }
+});
+
 // GET /api/admin/hero-images — List all hero images for preview
 router.get('/hero-images', async (_req: AuthRequest, res: Response) => {
     try {
