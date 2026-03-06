@@ -129,6 +129,13 @@ export const addImages = (productId: string, images: any[]) =>
 export const deleteImage = (imageId: string) =>
     adminFetch(`/admin/images/${imageId}`, { method: 'DELETE' });
 
+// Reorder images
+export const reorderImages = (productId: string, imageIds: string[]) =>
+    adminFetch(`/admin/products/${productId}/images/reorder`, {
+        method: 'PATCH',
+        body: JSON.stringify({ imageIds }),
+    });
+
 // Hero images
 export const toggleHeroImage = (imageId: string, hero: boolean) =>
     adminFetch(`/admin/images/${imageId}/hero`, { method: 'PATCH', body: JSON.stringify({ hero }) });

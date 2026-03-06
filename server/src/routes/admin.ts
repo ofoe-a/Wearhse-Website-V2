@@ -507,6 +507,24 @@ router.patch('/images/:id/hero', async (req: AuthRequest, res: Response) => {
     }
 });
 
+// PATCH /api/admin/products/:id/images/reorder — Reorder images
+router.patch('/products/:id/images/reorder', async (req: AuthRequest, res: Response) => {
+    try {
+        const { imageIds } = req.body; // array of image IDs in new order
+        if (!Array.isArray(imageIds)) {
+            res.status(400).json({ error: 'imageIds must be an array' });
+            return;
+        }
+        for (let i = 0; i < imageIds.length; i++) {
+            await query('UPDATE product_images SET sort_order = $1 WHERE id = $2 AND product_id = $3', [i, imageIds[i], req.params.id]);
+        }
+        res.json({ message: 'Image order updated' });
+    } catch (err) {
+        console.error('Reorder images error:', err);
+        res.status(500).json({ error: 'Failed to reorder images' });
+    }
+});
+
 // DELETE /api/admin/images/:id — Delete a product image
 router.delete('/images/:id', async (req: AuthRequest, res: Response) => {
     try {

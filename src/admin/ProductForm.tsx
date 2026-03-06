@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Loader2, Plus, Trash2, Save, Image, Upload, X, GripVertical } from 'lucide-react';
-import { fetchAdminProduct, createProduct, updateProduct, updateVariant, addVariants, addImages, deleteImage, toggleHeroImage, uploadImages, reorderColors } from './services/adminApi';
+import { ArrowLeft, Loader2, Plus, Trash2, Save, Image, Upload, X, GripVertical, ChevronUp, ChevronDown } from 'lucide-react';
+import { fetchAdminProduct, createProduct, updateProduct, updateVariant, addVariants, addImages, deleteImage, reorderImages, toggleHeroImage, uploadImages, reorderColors } from './services/adminApi';
 import { resolveImageUrl } from '../utils/imageUrl';
 
 const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -302,6 +302,23 @@ const ProductForm: React.FC = () => {
             }
         }
         setImages(images.filter((_, i) => i !== idx));
+    };
+
+    const moveImage = async (idx: number, direction: 'up' | 'down') => {
+        const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+        if (newIdx < 0 || newIdx >= images.length) return;
+        const updated = [...images];
+        [updated[idx], updated[newIdx]] = [updated[newIdx], updated[idx]];
+        // Update sortOrder values
+        const reordered = updated.map((img, i) => ({ ...img, sortOrder: i }));
+        setImages(reordered);
+        // Persist to backend if editing existing product
+        if (isEdit && id) {
+            const existingIds = reordered.filter(i => i.id).map(i => i.id!);
+            if (existingIds.length > 0) {
+                reorderImages(id, existingIds).catch(console.error);
+            }
+        }
     };
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -710,6 +727,23 @@ const ProductForm: React.FC = () => {
                     {images.map((img, idx) => (
                         <div key={idx} className="border border-ink/5 rounded-lg p-3 space-y-2">
                             <div className="flex gap-3 items-start">
+                                <div className="flex flex-col gap-0.5 flex-shrink-0">
+                                    <button
+                                        onClick={() => moveImage(idx, 'up')}
+                                        disabled={idx === 0}
+                                        className="p-0.5 text-ink/25 hover:text-ink/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronUp size={14} />
+                                    </button>
+                                    <span className="font-mono text-[9px] text-ink/30 text-center">{idx + 1}</span>
+                                    <button
+                                        onClick={() => moveImage(idx, 'down')}
+                                        disabled={idx === images.length - 1}
+                                        className="p-0.5 text-ink/25 hover:text-ink/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronDown size={14} />
+                                    </button>
+                                </div>
                                 {img.url && (
                                     <div className="w-14 h-14 rounded-lg overflow-hidden bg-ink/5 flex-shrink-0">
                                         <img src={resolveImageUrl(img.url)} alt="" className="w-full h-full object-cover" />
