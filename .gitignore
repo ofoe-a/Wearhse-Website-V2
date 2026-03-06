@@ -16,9 +16,6 @@ dist-ssr
 .env
 server/.env
 
-# Uploads (user-generated content)
-server/uploads/
-
 # Claude
 .claude/
 
