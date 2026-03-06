@@ -53,8 +53,8 @@ const Navbar: React.FC<NavbarProps> = ({ showBackButton }) => {
                             <span className="hidden sm:inline text-[11px]">Back</span>
                         </button>
                     ) : (
-                        <Link to="/" className="font-display text-base sm:text-lg tracking-tighter text-ink">
-                            WEARHSE
+                        <Link to="/" className="block">
+                            <img src="/images/Logo-Color.svg" alt="WEARHSE" className="h-8 sm:h-9 w-auto" />
                         </Link>
                     )}
                 </div>

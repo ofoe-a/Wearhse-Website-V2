@@ -18,8 +18,8 @@ const Footer: React.FC = () => {
             <div className="px-5 md:px-8 lg:px-12 py-10 md:py-14">
                 {/* Top row — brand */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 mb-10 md:mb-14 pb-8 border-b border-bone/6">
-                    <Link to="/" className="font-display text-2xl sm:text-3xl tracking-tighter uppercase">
-                        WEARHSE
+                    <Link to="/" className="block">
+                        <img src="/images/Logo-Color.svg" alt="WEARHSE" className="h-10 sm:h-12 w-auto invert brightness-200" />
                     </Link>
                     <p className="font-mono text-[9px] text-bone/15 uppercase tracking-[0.35em] max-w-xs">
                         Made in Ghana. Worn everywhere.

@@ -155,13 +155,13 @@ const HeroSection: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* Vertical brand text */}
-                    <span
-                        className="font-mono text-[9px] uppercase tracking-[0.5em] text-ink/8"
+                    {/* Vertical brand logo */}
+                    <img
+                        src="/images/Logo-Color.svg"
+                        alt="WEARHSE"
+                        className="w-6 opacity-10"
                         style={{ writingMode: 'vertical-rl' }}
-                    >
-                        WEARHSE
-                    </span>
+                    />
                 </div>
             </div>
 
