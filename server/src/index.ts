@@ -29,9 +29,18 @@ import shippingRoutes from './routes/shipping';
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// CORS — allow frontend
+// CORS — allow frontend (supports comma-separated origins for dev + production)
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
+    .split(',')
+    .map(s => s.trim());
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(null, false);
+        }
+    },
     credentials: true,
 }));
 
