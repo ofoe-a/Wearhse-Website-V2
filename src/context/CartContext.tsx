@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 export interface CartItem {
     id: string;
@@ -30,7 +31,10 @@ const CART_STORAGE_KEY = 'wearhse-cart';
 function loadCart(): CartItem[] {
     try {
         const stored = localStorage.getItem(CART_STORAGE_KEY);
-        return stored ? JSON.parse(stored) : [];
+        if (!stored) return [];
+        const items: CartItem[] = JSON.parse(stored);
+        // Resolve any old /uploads/... URLs saved before the fix
+        return items.map(item => ({ ...item, image: resolveImageUrl(item.image) }));
     } catch {
         return [];
     }

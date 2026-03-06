@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { fetchProducts, type Product } from '../services/api';
 import { PRODUCTS as FALLBACK_PRODUCTS } from '../data/products';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 interface ProductsContextType {
     products: Product[];
@@ -40,6 +41,19 @@ function convertFallback(): Product[] {
     }));
 }
 
+// Resolve all image URLs in product data so components don't need to worry about it
+function resolveProductImages(products: Product[]): Product[] {
+    return products.map(p => ({
+        ...p,
+        heroImages: p.heroImages?.map(resolveImageUrl) || [],
+        variants: p.variants.map(v => ({
+            ...v,
+            image: resolveImageUrl(v.image),
+            images: v.images.map(resolveImageUrl),
+        })),
+    }));
+}
+
 export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
@@ -52,13 +66,13 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
             try {
                 const data = await fetchProducts();
                 if (!cancelled) {
-                    setProducts(data);
+                    setProducts(resolveProductImages(data));
                     setLoading(false);
                 }
             } catch (err) {
                 console.warn('API unavailable, using fallback data:', err);
                 if (!cancelled) {
-                    setProducts(convertFallback());
+                    setProducts(resolveProductImages(convertFallback()));
                     setError('Using offline data');
                     setLoading(false);
                 }
