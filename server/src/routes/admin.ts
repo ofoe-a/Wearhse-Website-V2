@@ -552,30 +552,17 @@ router.delete('/products/:id', async (req: AuthRequest, res: Response) => {
             return;
         }
 
-        // Delete in order: order_items referencing variant sizes, then cascade through related tables
-        // 1. Delete order items that reference this product's variant sizes
+        // 1. Delete order items referencing this product's variants
         await query(`
-            DELETE FROM order_items WHERE variant_size_id IN (
-                SELECT pvs.id FROM product_variant_sizes pvs
-                JOIN product_variants pv ON pvs.variant_id = pv.id
-                WHERE pv.product_id = $1
-            )
-        `, [id]);
-
-        // 2. Delete variant sizes
-        await query(`
-            DELETE FROM product_variant_sizes WHERE variant_id IN (
+            DELETE FROM order_items WHERE variant_id IN (
                 SELECT id FROM product_variants WHERE product_id = $1
             )
         `, [id]);
 
-        // 3. Delete product images
+        // 2. The rest cascades via ON DELETE CASCADE, but explicit is safer
+        await query('DELETE FROM product_details WHERE product_id = $1', [id]);
         await query('DELETE FROM product_images WHERE product_id = $1', [id]);
-
-        // 4. Delete product variants
         await query('DELETE FROM product_variants WHERE product_id = $1', [id]);
-
-        // 5. Delete the product itself
         await query('DELETE FROM products WHERE id = $1', [id]);
 
         res.json({ message: `Product "${product.rows[0].name}" deleted` });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Loader2, Package, EyeOff, Star, Trash2 } from 'lucide-react';
+import { Plus, Loader2, Package, EyeOff, Star, Trash2, X, AlertTriangle } from 'lucide-react';
 import { fetchAdminProducts, deleteProduct } from './services/adminApi';
 import { resolveImageUrl } from '../utils/imageUrl';
 
@@ -22,26 +22,31 @@ const ProductsPage: React.FC = () => {
     const [products, setProducts] = useState<AdminProduct[]>([]);
     const [loading, setLoading] = useState(true);
     const [deleting, setDeleting] = useState<string | null>(null);
+    const [deleteTarget, setDeleteTarget] = useState<AdminProduct | null>(null);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     useEffect(() => {
         fetchAdminProducts().then(setProducts).catch(console.error).finally(() => setLoading(false));
     }, []);
 
-    const handleDelete = async (e: React.MouseEvent, product: AdminProduct) => {
+    const openDeleteModal = (e: React.MouseEvent, product: AdminProduct) => {
         e.preventDefault();
         e.stopPropagation();
+        setDeleteError(null);
+        setDeleteTarget(product);
+    };
 
-        if (!window.confirm(`Delete "${product.name}"? This will remove all variants, images, and related data. This cannot be undone.`)) {
-            return;
-        }
-
-        setDeleting(product.id);
+    const confirmDelete = async () => {
+        if (!deleteTarget) return;
+        setDeleting(deleteTarget.id);
+        setDeleteError(null);
         try {
-            await deleteProduct(product.id);
-            setProducts(prev => prev.filter(p => p.id !== product.id));
+            await deleteProduct(deleteTarget.id);
+            setProducts(prev => prev.filter(p => p.id !== deleteTarget.id));
+            setDeleteTarget(null);
         } catch (err) {
             console.error('Failed to delete product:', err);
-            alert('Failed to delete product. Please try again.');
+            setDeleteError('Failed to delete product. Please try again.');
         } finally {
             setDeleting(null);
         }
@@ -132,9 +137,9 @@ const ProductsPage: React.FC = () => {
                                 </div>
                             </Link>
 
-                            {/* Delete button — always visible */}
+                            {/* Delete button */}
                             <button
-                                onClick={(e) => handleDelete(e, product)}
+                                onClick={(e) => openDeleteModal(e, product)}
                                 disabled={deleting === product.id}
                                 className="absolute top-2 right-2 p-2 rounded-lg bg-red-500/90 text-white hover:bg-red-600 transition-all duration-200 shadow-md disabled:opacity-50 z-10"
                                 title={`Delete ${product.name}`}
@@ -147,6 +152,79 @@ const ProductsPage: React.FC = () => {
                             </button>
                         </div>
                     ))}
+                </div>
+            )}
+
+            {/* ─── Delete Confirmation Modal ─── */}
+            {deleteTarget && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
+                        onClick={() => !deleting && setDeleteTarget(null)}
+                    />
+
+                    {/* Modal */}
+                    <div className="relative bg-bone rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-ink/10">
+                        {/* Close button */}
+                        <button
+                            onClick={() => !deleting && setDeleteTarget(null)}
+                            className="absolute top-4 right-4 p-1 rounded-lg hover:bg-ink/5 transition-colors"
+                            disabled={!!deleting}
+                        >
+                            <X size={16} className="text-ink/40" />
+                        </button>
+
+                        <div className="p-6">
+                            {/* Icon */}
+                            <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
+                                <AlertTriangle size={22} className="text-red-500" />
+                            </div>
+
+                            {/* Title */}
+                            <h3 className="font-display text-lg uppercase tracking-tight mb-2">Delete Product</h3>
+
+                            {/* Description */}
+                            <p className="font-mono text-[13px] text-ink/50 leading-relaxed mb-1">
+                                Are you sure you want to delete <strong className="text-ink/70">"{deleteTarget.name}"</strong>?
+                            </p>
+                            <p className="font-mono text-[12px] text-ink/35 leading-relaxed">
+                                This will permanently remove all variants, images, and related data. This action cannot be undone.
+                            </p>
+
+                            {/* Error message */}
+                            {deleteError && (
+                                <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200">
+                                    <p className="font-mono text-[12px] text-red-600">{deleteError}</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex gap-3 px-6 pb-6">
+                            <button
+                                onClick={() => setDeleteTarget(null)}
+                                disabled={!!deleting}
+                                className="flex-1 py-3 px-4 rounded-xl font-mono text-[12px] uppercase tracking-wider border border-ink/15 text-ink/60 hover:bg-ink/5 transition-colors disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                disabled={!!deleting}
+                                className="flex-1 py-3 px-4 rounded-xl font-mono text-[12px] uppercase tracking-wider bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+                            >
+                                {deleting ? (
+                                    <>
+                                        <Loader2 size={14} className="animate-spin" />
+                                        Deleting...
+                                    </>
+                                ) : (
+                                    'Delete Product'
+                                )}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
