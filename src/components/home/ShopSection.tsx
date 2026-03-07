@@ -24,13 +24,13 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
-            {/* Image container — compact 3:4 ratio like Zara/ASOS */}
-            <div className="relative overflow-hidden bg-[#e8e8e4] w-full aspect-[3/4]">
+            {/* Image container — compact square-ish ratio */}
+            <div className="relative overflow-hidden bg-[#e8e8e4] w-full aspect-square">
                 <img
                     src={primaryImage}
                     alt={`${product.name} — ${variant.name}`}
                     loading="lazy"
-                    className={`absolute inset-0 w-full h-full object-cover object-top transition-all duration-700 ease-out group-hover:scale-105 filter contrast-110 grayscale-[10%] ${
+                    className={`absolute inset-0 w-full h-full object-cover object-[center_15%] transition-all duration-700 ease-out group-hover:scale-105 filter contrast-110 grayscale-[10%] ${
                         altImage && hovered ? 'opacity-0' : 'opacity-100'
                     }`}
                 />
@@ -39,7 +39,7 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
                         src={altImage}
                         alt={`${product.name} — ${variant.name} back`}
                         loading="lazy"
-                        className="absolute inset-0 w-full h-full object-cover object-top transition-all duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-105 filter contrast-110 grayscale-[10%]"
+                        className="absolute inset-0 w-full h-full object-cover object-[center_15%] transition-all duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-105 filter contrast-110 grayscale-[10%]"
                     />
                 )}
                 <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/5 transition-colors duration-500" />

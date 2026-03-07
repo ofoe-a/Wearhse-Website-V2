@@ -131,11 +131,11 @@ const ProductsPage: React.FC = () => {
                                 </div>
                             </Link>
 
-                            {/* Delete button — appears on hover */}
+                            {/* Delete button — always visible */}
                             <button
                                 onClick={(e) => handleDelete(e, product)}
                                 disabled={deleting === product.id}
-                                className="absolute top-2 right-2 p-2 rounded-lg bg-red-500/90 text-white opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all duration-200 shadow-md disabled:opacity-50"
+                                className="absolute top-2 right-2 p-2 rounded-lg bg-red-500/90 text-white hover:bg-red-600 transition-all duration-200 shadow-md disabled:opacity-50 z-10"
                                 title={`Delete ${product.name}`}
                             >
                                 {deleting === product.id ? (
