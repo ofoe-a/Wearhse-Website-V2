@@ -128,11 +128,11 @@ const ProductDetails: React.FC = () => {
                 {/* ═══ IMAGE SECTION ═══ */}
                 <div className="w-full lg:w-[55%] xl:w-[58%] relative">
                     <div className="lg:sticky lg:top-0">
-                        <div className="relative aspect-[3/4] sm:aspect-[4/5] lg:aspect-auto lg:h-screen flex items-center justify-center overflow-hidden">
+                        <div className="relative flex items-center justify-center">
                             <ImageZoom
                                 src={variantImages[currentImage]}
                                 alt={`${product.name} — ${variant.name}`}
-                                className="max-h-full max-w-full p-6 sm:p-10 lg:p-16"
+                                className="w-full h-auto p-4 sm:p-8 lg:p-12"
                             />
 
                             {/* Share */}

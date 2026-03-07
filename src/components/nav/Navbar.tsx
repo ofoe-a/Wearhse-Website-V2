@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowLeft, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Home, ShoppingCart, Search, Truck, MessageCircle } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
 interface NavbarProps {
@@ -20,13 +19,11 @@ const navLinks: NavLink[] = [
 ];
 
 const Navbar: React.FC<NavbarProps> = ({ showBackButton }) => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { cartCount, toggleCart } = useCart();
     const navigate = useNavigate();
     const location = useLocation();
 
     const handleNavClick = (to: string) => {
-        setIsMenuOpen(false);
         if (to.includes('#')) {
             const [path, hash] = to.split('#');
             if (location.pathname === path || (path === '/' && location.pathname === '/')) {
@@ -39,8 +36,15 @@ const Navbar: React.FC<NavbarProps> = ({ showBackButton }) => {
         }
     };
 
+    const isActive = (to: string) => {
+        if (to === '/') return location.pathname === '/';
+        if (to.includes('#')) return location.pathname === '/' || location.pathname === to.split('#')[0];
+        return location.pathname.startsWith(to);
+    };
+
     return (
         <>
+            {/* ═══ TOP NAVBAR ═══ */}
             <nav className="w-full flex items-center justify-between px-5 py-4 md:px-8 md:py-5 lg:px-12 font-mono text-[11px] md:text-[12px] uppercase tracking-[0.2em] text-ink/70 select-none relative z-50">
                 {/* Left: Back button or brand */}
                 <div className="flex items-center gap-3 min-w-[80px]">
@@ -72,11 +76,11 @@ const Navbar: React.FC<NavbarProps> = ({ showBackButton }) => {
                     ))}
                 </div>
 
-                {/* Right: Cart + mobile menu */}
+                {/* Right: Cart (desktop shows label, mobile just icon in bottom nav) */}
                 <div className="flex items-center gap-3 min-w-[80px] justify-end">
                     <button
                         onClick={() => toggleCart(true)}
-                        className="flex items-center gap-1.5 hover:text-ink transition-colors relative"
+                        className="hidden md:flex items-center gap-1.5 hover:text-ink transition-colors relative"
                     >
                         <ShoppingBag size={17} />
                         {cartCount > 0 && (
@@ -84,44 +88,76 @@ const Navbar: React.FC<NavbarProps> = ({ showBackButton }) => {
                                 {cartCount}
                             </span>
                         )}
-                        <span className="hidden md:inline ml-1">Bag</span>
-                    </button>
-
-                    <button
-                        className="md:hidden p-1 ml-1"
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    >
-                        {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                        <span className="ml-1">Bag</span>
                     </button>
                 </div>
             </nav>
 
-            {/* Mobile Menu Overlay */}
-            <div
-                className={`fixed inset-0 bg-bone z-40 flex flex-col items-center justify-center gap-5 transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
-                    isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
-                }`}
-            >
-                {navLinks.map((link, i) => (
+            {/* ═══ MOBILE BOTTOM NAV ═══ */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-bone/95 backdrop-blur-md border-t border-ink/8">
+                <div className="flex items-center justify-around py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+                    {/* Home */}
                     <button
-                        key={link.label}
-                        onClick={() => handleNavClick(link.to)}
-                        className="font-display text-3xl sm:text-4xl uppercase tracking-tighter text-ink hover:text-accent-gray transition-colors"
-                        style={{ transitionDelay: isMenuOpen ? `${i * 50}ms` : '0ms' }}
+                        onClick={() => handleNavClick('/')}
+                        className={`flex flex-col items-center gap-0.5 px-3 py-1 transition-colors ${
+                            isActive('/') && !isActive('/#shop') ? 'text-ink' : 'text-ink/40'
+                        }`}
                     >
-                        {link.label}
+                        <Home size={20} strokeWidth={isActive('/') ? 2.5 : 1.5} />
+                        <span className="font-mono text-[8px] uppercase tracking-[0.15em]">Home</span>
                     </button>
-                ))}
-                <div className="mt-6 pt-6 border-t border-ink/10 w-48 flex justify-center">
+
+                    {/* Shop */}
                     <button
-                        onClick={() => { toggleCart(true); setIsMenuOpen(false); }}
-                        className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-ink/50 hover:text-ink transition-colors"
+                        onClick={() => handleNavClick('/#shop')}
+                        className={`flex flex-col items-center gap-0.5 px-3 py-1 transition-colors ${
+                            isActive('/#shop') ? 'text-ink' : 'text-ink/40'
+                        }`}
                     >
-                        <ShoppingBag size={15} />
-                        Cart ({cartCount})
+                        <Search size={20} strokeWidth={1.5} />
+                        <span className="font-mono text-[8px] uppercase tracking-[0.15em]">Shop</span>
+                    </button>
+
+                    {/* Bag */}
+                    <button
+                        onClick={() => toggleCart(true)}
+                        className="flex flex-col items-center gap-0.5 px-3 py-1 text-ink/40 relative transition-colors"
+                    >
+                        <div className="relative">
+                            <ShoppingBag size={20} strokeWidth={1.5} />
+                            {cartCount > 0 && (
+                                <span className="absolute -top-1 -right-2 w-4 h-4 bg-ink text-bone text-[7px] flex items-center justify-center font-bold rounded-full">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </div>
+                        <span className="font-mono text-[8px] uppercase tracking-[0.15em]">Bag</span>
+                    </button>
+
+                    {/* Track */}
+                    <button
+                        onClick={() => handleNavClick('/track')}
+                        className={`flex flex-col items-center gap-0.5 px-3 py-1 transition-colors ${
+                            isActive('/track') ? 'text-ink' : 'text-ink/40'
+                        }`}
+                    >
+                        <Truck size={20} strokeWidth={isActive('/track') ? 2.5 : 1.5} />
+                        <span className="font-mono text-[8px] uppercase tracking-[0.15em]">Track</span>
+                    </button>
+
+                    {/* Support */}
+                    <button
+                        onClick={() => handleNavClick('/support')}
+                        className={`flex flex-col items-center gap-0.5 px-3 py-1 transition-colors ${
+                            isActive('/support') ? 'text-ink' : 'text-ink/40'
+                        }`}
+                    >
+                        <MessageCircle size={20} strokeWidth={isActive('/support') ? 2.5 : 1.5} />
+                        <span className="font-mono text-[8px] uppercase tracking-[0.15em]">Help</span>
                     </button>
                 </div>
             </div>
+
         </>
     );
 };
