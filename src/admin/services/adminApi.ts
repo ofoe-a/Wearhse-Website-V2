@@ -101,6 +101,9 @@ export const createProduct = (data: any) =>
 export const updateProduct = (id: string, data: any) =>
     adminFetch(`/products/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 
+export const deleteProduct = (id: string) =>
+    adminFetch(`/admin/products/${id}`, { method: 'DELETE' });
+
 export const updateVariant = (id: string, data: { stock?: number; pricePesewas?: number }) =>
     adminFetch(`/admin/variants/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 
