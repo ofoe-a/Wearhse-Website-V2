@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Loader2, Package, EyeOff, Star, Trash2 } from 'lucide-react';
 import { fetchAdminProducts, deleteProduct } from './services/adminApi';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 interface AdminProduct {
     id: string;
@@ -91,7 +92,7 @@ const ProductsPage: React.FC = () => {
                                 <div className="aspect-[4/3] bg-ink/5 overflow-hidden">
                                     {product.thumbnail ? (
                                         <img
-                                            src={product.thumbnail}
+                                            src={resolveImageUrl(product.thumbnail)}
                                             alt={product.name}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                         />
