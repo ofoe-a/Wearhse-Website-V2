@@ -396,7 +396,7 @@ const ProductDetails: React.FC = () => {
             </div>
 
             {/* ─── STICKY MOBILE ADD-TO-CART BAR ─── */}
-            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-bone/95 backdrop-blur-md border-t border-ink/10 px-4 pt-3 pb-safe-bottom">
+            <div className="lg:hidden fixed bottom-16 left-0 right-0 z-40 bg-bone/95 backdrop-blur-md border-t border-ink/10 px-4 py-3">
                 <div className="flex items-center gap-3">
                     <div className="flex-1 min-w-0">
                         <p className="font-mono text-lg font-semibold text-ink tabular-nums truncate tracking-tight">
