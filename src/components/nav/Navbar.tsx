@@ -1,5 +1,5 @@
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag, Home, ShoppingCart, Search, Truck, MessageCircle } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Home, Search, Truck, MessageCircle } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
 interface NavbarProps {
