@@ -133,7 +133,7 @@ router.post('/checkout', async (req: Request, res: Response) => {
                 orderId: order.id,
                 orderNumber: order.order_number,
             },
-            callback_url: `${process.env.FRONTEND_URL}/order/verify?reference=${reference}`,
+            callback_url: `${(process.env.FRONTEND_URL || 'http://localhost:5173').split(',')[0].trim()}/order/verify?reference=${reference}`,
         });
 
         // Store access code
