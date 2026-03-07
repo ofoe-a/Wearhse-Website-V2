@@ -54,7 +54,7 @@ const Navbar: React.FC<NavbarProps> = ({ showBackButton }) => {
                         </button>
                     ) : (
                         <Link to="/" className="block">
-                            <img src="/images/Logo-Color.svg" alt="WEARHSE" className="h-8 sm:h-9 w-auto" />
+                            <img src="/images/Logo-Color.svg" alt="WEARHSE" className="h-14 sm:h-16 w-auto" />
                         </Link>
                     )}
                 </div>
