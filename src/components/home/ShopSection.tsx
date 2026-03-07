@@ -24,8 +24,8 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
-            {/* Image container — compact 4:5 ratio like Zara/ASOS */}
-            <div className="relative overflow-hidden bg-[#e8e8e4] w-full aspect-[4/5]">
+            {/* Image container — compact 3:4 ratio like Zara/ASOS */}
+            <div className="relative overflow-hidden bg-[#e8e8e4] w-full aspect-[3/4]">
                 <img
                     src={primaryImage}
                     alt={`${product.name} — ${variant.name}`}
@@ -107,7 +107,7 @@ const ShopSection: React.FC = () => {
                         <span className="font-mono text-[9px] text-ink/25 uppercase tracking-[0.4em] block mb-1.5">
                             The Edit
                         </span>
-                        <h2 className="font-display text-[10vw] sm:text-[7vw] md:text-[5vw] lg:text-[3.5vw] leading-[0.85] tracking-tighter uppercase">
+                        <h2 className="font-display text-[7vw] sm:text-[5vw] md:text-[3.5vw] lg:text-[2.5vw] leading-[0.85] tracking-tighter uppercase">
                             <span className="text-ink">Ready to</span>{' '}
                             <span className="text-ink/30">Wear</span>
                         </h2>
@@ -118,7 +118,7 @@ const ShopSection: React.FC = () => {
                 </div>
             </div>
 
-            {/* Product grid — 2 cols mobile, 3 cols desktop */}
+            {/* Product grid — 2 cols mobile, 3 cols tablet, 4 cols desktop */}
             <div className="w-full px-3 md:px-6 lg:px-10 py-4 md:py-6">
                 {loading ? (
                     <div className="flex justify-center py-16">
@@ -127,12 +127,14 @@ const ShopSection: React.FC = () => {
                         </p>
                     </div>
                 ) : (
-                    <div className={`grid gap-3 md:gap-4 max-w-7xl mx-auto ${
+                    <div className={`grid gap-2 sm:gap-3 md:gap-4 max-w-7xl mx-auto ${
                         products.length === 1
                             ? 'grid-cols-1 max-w-xs sm:max-w-sm'
                             : products.length === 2
                             ? 'grid-cols-2 max-w-3xl'
-                            : 'grid-cols-2 md:grid-cols-3'
+                            : products.length === 3
+                            ? 'grid-cols-2 md:grid-cols-3'
+                            : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
                     }`}>
                         {products.map((product, i) => (
                             <ProductCard key={product.id} product={product} index={i} />
